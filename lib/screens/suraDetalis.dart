@@ -21,6 +21,9 @@ class _SuraDetailsState extends State<SuraDetails> {
 
   @override
   Widget build(BuildContext context) {
+    double h=MediaQuery.of(context).size.height;
+    double w= MediaQuery.of(context).size.width;
+    double containerHight=h*0.75;
     var args = ModalRoute.of(context)!.settings.arguments as SuraDetailsArgs;
     if(suraLines.isEmpty) readFile(args.fileName);
 
@@ -36,29 +39,56 @@ class _SuraDetailsState extends State<SuraDetails> {
           backgroundColor: Colors.transparent,
           title: Text("Islami",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: AppColores.accentColor),)),
         body: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.only(top: 15),
           child: Container(
+              height:containerHight,
+                width: w * 0.85,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Colors.white,
-            ),
+                    gradient: LinearGradient(
+                      colors: [Colors.white.withOpacity(0.2), Colors.white],
+                    ),
+                    borderRadius: BorderRadius.circular(20)),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text("  سوره ${args.suraName}",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: AppColores.accentColor),),
+                   SizedBox(
+                    height: h * 0.05,
+                  ),
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "سوره ${args.suraName}",
+                        style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "font2"),
+                      ),
+                      const Icon(
+                        Icons.play_circle,
+                        size: 45,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 10,),
                   Container(
-                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 40),
                     height: 3,
                     color: AppColores.primaryColor,
                     padding: const EdgeInsets.only(left: 5),
                   ),
-                   suraContent.isEmpty?
-                                   const Center(child: CircularProgressIndicator()):
-                                   Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(suraContent,style: TextStyle(fontSize: 25,color: AppColores.accentColor,),textAlign: TextAlign.center,),
-                                   ),
+                  const SizedBox(height: 8,),
+
+                   SizedBox(
+                    height: containerHight-containerHight*0.2,
+                     child: SingleChildScrollView(
+                       child: Column(
+                         children: 
+                           Soura(),
+                         
+                       ),
+                     ),
+                   ),
               
               
                 ],
@@ -69,10 +99,23 @@ class _SuraDetailsState extends State<SuraDetails> {
       ),
     );
   }
-
+ // ignore: non_constant_identifier_names
+ List<Text> Soura() {
+    return List.generate(suraLines.length, (index) {
+      return Text("${suraContent[index]}(${index+1})",
+        style: const TextStyle(
+            fontSize: 20,
+            fontFamily: "font2",
+        ),
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.rtl,
+      );
+    });
+  }
+ 
   void readFile(String fileName) async{
     suraContent = await rootBundle.loadString("assets/files/$fileName");
-   suraLines = suraContent.split("\n");
+   suraLines = suraContent.trim().split("\n");
    setState(() {});
   }
 }
